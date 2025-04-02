@@ -3,10 +3,25 @@ from datetime import datetime
 import os
 import subprocess
 from flask import Flask, send_from_directory, Response, render_template, redirect, url_for
+import json
 
 app = Flask(__name__)
 
 PLOTS_DIR = 'plots'
+
+device_mapping = {}
+
+def load_device_config():
+	config_path = os.path.join(os.path.dirname(__file__), 'devices.json')
+	try:
+		with open(config_path, 'r') as f:
+			config = json.load(f)
+			device_mapping.update(config.get('devices', {}))
+		print(f"Loaded {len(device_mapping)} device mappings")
+	except (FileNotFoundError, json.JSONDecodeError) as e:
+		print(f"Warning: Could not load config - {str(e)}")
+
+load_device_config()
 
 if not os.path.exists(PLOTS_DIR):
 	os.makedirs(PLOTS_DIR)
@@ -53,12 +68,10 @@ def plot_temperature(filename, month=None, day=None, dumb=False):
 		hours = total_seconds / 3600.0
 		plot_data += f"{round(hours, 2)} {float(temp)}\n"
 
-	# Define output filename (just room.png)
 	base_name = os.path.splitext(filename)[0]
 	plot_file = f"{base_name}.png" if not dumb else f"{base_name}.plot"
 	script_file = f"{base_name}.gnuplot"
 
-	# Generate the gnuplot script
 	gnuplot_script = f"""
 	set terminal {"dumb" if dumb else "pngcairo size 1600,600 enhanced"}
 	set title "Temperature for {base_name} on {last_date.date()}"
@@ -279,6 +292,11 @@ def all_plots():
 	plot_files = [f for f in os.listdir(PLOTS_DIR) if f.endswith('.png')]
 	return render_template('all_plots.html', plot_files=plot_files)
 
+@app.route('/get_name/<ip_address>')
+def get_name(ip_address):
+	load_device_config()
+	name = device_mapping.get(ip_address, "unknown")
+	return f"DeviceName: {name}"
 
 if __name__ == "__main__":
 	app.run(debug=True)
