@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Temperature Plots</title>
+	<!-- Add Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			padding: 20px;
+		}
+		h1 {
+			margin-bottom: 20px;
+		}
+		.room-link {
+			display: flex;
+			justify-content: space-between;
+		}
+		.room-link a {
+			font-size: 1.2rem;
+		}
+		.room-container {
+			display: flex;
+			justify-content: space-between;
+		}
+		.room-box {
+			width: 48%;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="text-center">Available Temperature Plots</h1>
+
+		<div class="text-center mb-4">
+			<a href="{{ url_for('all_plots') }}" class="btn btn-success">View All Plots</a>
+		</div>
+
+		{% if rooms %}
+			<div class="row">
+				{% for room in rooms %}
+					<div class="col-md-6 room-container mb-3">
+						<div class="room-box">
+							<h5><strong>{{ room }}</strong></h5>
+							<div class="room-link">
+								<a href="{{ url_for('plottemp', room=room) }}" class="btn btn-primary w-100">Classic Plot</a>
+							</div>
+						</div>
+						<div class="room-box">
+							<h5><strong>{{ room }}</strong></h5>
+							<div class="room-link">
+								<a href="{{ url_for('plotsimple', room=room) }}" class="btn btn-secondary w-100">Simple Plot</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% else %}
+			<p>No temperature log files found.</p>
+		{% endif %}
+	</div>
+
+	<!-- Add Bootstrap JS and Popper.js -->
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Temperature Plot</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			padding: 20px;
+		}
+		h1 {
+			margin-bottom: 20px;
+		}
+		.plot-container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;  /* Centers the plots horizontally */
+		}
+		.plot-box {
+			width: 90%;  /* Adjusted to occupy more of the page */
+			max-width: 1500px;  /* Optional: Set a max width for larger screens */
+			margin-bottom: 20px;
+			text-align: center;
+		}
+		.plot-box img {
+			width: 100%;  /* Make the image fill the container */
+			height: auto;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+	</style>
+	
+</head>
+<body>
+	<div class="container">
+		<h1 class="text-center">Temperature Plot</h1>
+
+		<div class="plot-container">
+			<div class="plot-box">
+				<img src="{{ url_for('serve_plot', filename=plot_file) }}" alt="Temperature Plot">
+				<p>{{ plot_file }}</p>
+			</div>
+		</div>
+		
+		<div class="text-center">
+			<a href="/" class="btn btn-primary">Back to Main Page</a>
+		</div>  
+	</div>
+</body>
+</html>
