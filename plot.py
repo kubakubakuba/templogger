@@ -16,9 +16,13 @@ def plot_temperature(filename):
 			parts = line.strip().split(", ")
 			if len(parts) != 2:
 				continue
-			
+
 			timestamp_str, temp_str = parts
 			
+			# fix erroneous negative temperatures
+			if float(temp_str) < -69:
+				continue
+
 			try:
 				timestamp = datetime.strptime(timestamp_str, '%Y-%m-%d %H:%M:%S')
 				temp = float(temp_str)
